@@ -1,0 +1,42 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<form method="post" id="counterparty-form">
+    {% csrf_token %}
+    
+    <div>
+        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+            <div>
+                {% for error in form.name.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <div>
+        <label for="{{ form.inn.id_for_label }}">{{ form.inn.label }}</label>
+        <div>
+            {{ form.inn }}
+            <button type="button" id="check-inn-btn">Проверить ИНН</button>
+        </div>
+        {% if form.inn.errors %}
+            <div>
+                {% for error in form.inn.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div>{{ form.inn.help_text }}</div>
+    </div>
+    
+    <div>
+        <button type="submit">Сохранить</button>
+        <a href="{% url 'contract:counterparty_list' %}">Отмена</a>
+    </div>
+</form>
+{% endblock %}

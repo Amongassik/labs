@@ -1,0 +1,17 @@
+{% extends 'tracking/base.html' %}
+
+{% block title %}Удаление путевого листа{% endblock %}
+
+{% block content %}
+<div class="confirm-delete">
+    <h2>⚠️ Подтверждение удаления</h2>
+    <p>Вы уверены, что хотите удалить путевой лист от <strong>{{ waybill.date|date:"d.m.Y" }}</strong>?</p>
+    <p>Водитель: {{ waybill.driver }} | Автомобиль: {{ waybill.car.brand }}</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">🗑️ Удалить</button>
+        <a href="{% url 'tracking:waybill_list_tr' %}" class="btn btn-secondary">❌ Отмена</a>
+    </form>
+</div>
+{% endblock %}

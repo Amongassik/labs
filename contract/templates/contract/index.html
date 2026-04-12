@@ -1,0 +1,34 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>Выберите вариант задания</h2>
+
+<div>
+    <div>
+        <h3>Вариант 1. Основные средства</h3>
+        <p>Учёт основных средств с автоматической генерацией кода внутреннего учета</p>
+        <div>
+            <a href="{% url 'contract:departament_list' %}">Управление подразделениями</a>
+            <a href="{% url 'contract:fixed_asset_list' %}">Управление основными средствами</a>
+        </div>
+    </div>
+    
+    <div>
+        <h3>Вариант 2. Контрагенты</h3>
+        <p>Учёт контрагентов с проверкой ИНН и поиском дубликатов</p>
+        <div>
+            <a href="{% url 'contract:counterparty_list' %}">Управление контрагентами</a>
+            <a href="{% url 'contract:duplicate_groups' %}">Поиск дубликатов по ИНН</a>
+            <a href="{% url 'contract:check_duplicate_form' %}">Проверка ИНН</a>
+        </div>
+    </div>
+    
+    <div>
+        <h3>Журнал изменений</h3>
+        <p>Просмотр всех изменений в системе (имитация реестра изменений)</p>
+        <div>
+            <a href="{% url 'contract:changelog_list' %}">Перейти в журнал</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

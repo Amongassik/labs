@@ -1,0 +1,75 @@
+{% extends 'tracking/base.html' %}
+
+{% block title %}Диаграмма расхода топлива по автомобилям{% endblock %}
+
+{% block content %}
+<div class="chart-container">
+    <h2>📊 Диаграмма расхода топлива по автомобилям</h2>
+    
+    <canvas id="carChart" width="800" height="400"></canvas>
+    
+    <div class="chart-info">
+        <p>🔵 Синие столбцы - расход топлива каждого автомобиля</p>
+        <p>🔴 Красная линия - средний расход ({{ avg_fuel|floatformat:2 }} л)</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('carChart').getContext('2d');
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ car_names|safe }},
+            datasets: [
+                {
+                    label: 'Расход топлива (л)',
+                    data: {{ car_fuel|safe }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Средний расход',
+                    data: Array({{ car_names|length }}).fill({{ avg_fuel }}),
+                    type: 'line',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Расход топлива (л)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Автомобили'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.raw.toFixed(2)} л`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

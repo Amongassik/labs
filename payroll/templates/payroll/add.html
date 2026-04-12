@@ -1,0 +1,30 @@
+<!-- payroll/templates/payroll/add.html -->
+
+{% extends 'payroll/base.html' %}
+
+{% block content %}
+<form method="post" class="employee-form">
+    {% csrf_token %}
+    
+    <div class="form-group">
+        <label for="{{ form.name.id_for_label }}">ФИО сотрудника:</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+        <div class="error">{{ form.name.errors }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="form-group">
+        <label for="{{ form.accrued_amount.id_for_label }}">Начислено (руб.):</label>
+        {{ form.accrued_amount }}
+        {% if form.accrued_amount.errors %}
+        <div class="error">{{ form.accrued_amount.errors }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn btn-save">💾 Сохранить</button>
+        <a href="{% url 'index' %}" class="btn btn-cancel">❌ Отмена</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>Поиск дубликатов по ИНН</h2>
+
+<form method="post">
+    {% csrf_token %}
+    
+    {% if duplicate_groups %}
+        {% for inn, counterparties in duplicate_groups.items %}
+            <div>
+                <h3>ИНН: {{ inn }}</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Выбрать</th>
+                            <th>Внутренний код</th>
+                            <th>Наименование</th>
+                            <th>Текущий статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cp in counterparties %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="counterparty_ids" value="{{ cp.internal_code }}">
+                                </td>
+                                <td>{{ cp.internal_code }}</td>
+                                <td>{{ cp.name }}</td>
+                                <td>
+                                    {% if cp.deletion_mark %}
+                                        Помечен на удаление
+                                    {% else %}
+                                        Активен
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+        
+        <div>
+            {{ form.confirm.label }}
+            {{ form.confirm }}
+            {% if form.confirm.errors %}
+                <div>
+                    {% for error in form.confirm.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div>
+            <button type="submit">Пометить выбранных на удаление</button>
+        </div>
+    {% else %}
+        <p>Дубликатов по ИНН не найдено.</p>
+    {% endif %}
+</form>
+
+<div>
+    <a href="{% url 'contract:counterparty_list' %}">Вернуться к списку контрагентов</a>
+</div>
+{% endblock %}

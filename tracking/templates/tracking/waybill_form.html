@@ -1,0 +1,102 @@
+{% extends 'tracking/base.html' %}
+
+{% block title %}{{ title|default:"Путевой лист" }}{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>{{ title|default:"📄 Путевой лист" }}</h2>
+    
+    <form method="post" id="waybillForm">
+        {% csrf_token %}
+        
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <div class="error">{{ field.errors }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        
+        <div id="mileage_display" class="alert alert-info" style="display: none;"></div>
+        <div id="fuel_display" class="alert alert-success" style="display: none;"></div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+            <a href="{% url 'tracking:waybill_list_tr' %}" class="btn btn-secondary">❌ Отмена</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Фильтрация автомобилей при выборе водителя
+    function filterCars() {
+        const driverId = document.getElementById('id_driver').value;
+        const carSelect = document.getElementById('id_car');
+        
+        if (!driverId) {
+            carSelect.innerHTML = '<option value="">---------</option>';
+            return;
+        }
+        
+        fetch(`{% url 'tracking:get_driver_cars_tr' %}?driver_id=${driverId}`)
+            .then(response => response.json())
+            .then(data => {
+                carSelect.innerHTML = '<option value="">---------</option>';
+                if (data.cars && data.cars.length > 0) {
+                    data.cars.forEach(car => {
+                        const option = document.createElement('option');
+                        option.value = car.id;
+                        option.textContent = car.name;
+                        option.setAttribute('data-fuel-rate', car.fuel_rate);
+                        carSelect.appendChild(option);
+                    });
+                } else {
+                    const option = document.createElement('option');
+                    option.value = "";
+                    option.textContent = "Нет доступных автомобилей";
+                    carSelect.appendChild(option);
+                }
+            })
+            .catch(error => console.error('Ошибка:', error));
+    }
+    
+    // Расчёт пробега и расхода топлива
+    function calculateMileageAndFuel() {
+        const startMileage = parseInt(document.getElementById('id_start_mileage').value) || 0;
+        const endMileage = parseInt(document.getElementById('id_end_mileage').value) || 0;
+        const carSelect = document.getElementById('id_car');
+        const selectedOption = carSelect.options[carSelect.selectedIndex];
+        const fuelRate = parseFloat(selectedOption?.getAttribute('data-fuel-rate')) || 0;
+        
+        const mileage = endMileage - startMileage;
+        const fuelConsumption = mileage * fuelRate;
+        
+        const mileageDisplay = document.getElementById('mileage_display');
+        const fuelDisplay = document.getElementById('fuel_display');
+        
+        if (mileage > 0) {
+            mileageDisplay.textContent = `📊 Пробег: ${mileage} км`;
+            mileageDisplay.style.display = 'block';
+            fuelDisplay.textContent = `⛽ Расход топлива: ${fuelConsumption.toFixed(2)} л`;
+            fuelDisplay.style.display = 'block';
+        } else if (mileage < 0) {
+            mileageDisplay.textContent = `⚠️ Ошибка: конечный километраж меньше начального!`;
+            mileageDisplay.style.display = 'block';
+            fuelDisplay.style.display = 'none';
+        } else {
+            mileageDisplay.style.display = 'none';
+            fuelDisplay.style.display = 'none';
+        }
+    }
+    
+    // Загружаем автомобили при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        const driverSelect = document.getElementById('id_driver');
+        if (driverSelect && driverSelect.value) {
+            filterCars();
+        }
+    });
+</script>
+{% endblock %}

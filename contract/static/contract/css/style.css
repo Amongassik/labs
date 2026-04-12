@@ -1,0 +1,796 @@
+/* ============================================================
+   RESET И БАЗОВЫЕ СТИЛИ
+   ============================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ============================================================
+   ГЛАВНОЕ МЕНЮ (main-menu)
+   ============================================================ */
+
+.main-menu {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 25px 0;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border-bottom: 3px solid #e94560;
+}
+
+.main-menu h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.main-menu nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.main-menu nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 25px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    background-color: rgba(255,255,255,0.1);
+    backdrop-filter: blur(5px);
+}
+
+.main-menu nav a:hover {
+    background: linear-gradient(135deg, #e94560 0%, #c62a48 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(233,69,96,0.4);
+}
+
+/* ============================================================
+   КОНТЕНТНАЯ ОБЛАСТЬ (body-content)
+   ============================================================ */
+
+.body-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 25px;
+    min-height: calc(100vh - 250px);
+    background: rgba(255,255,255,0.9);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 30px;
+}
+
+.body-content h2 {
+    color: #1a1a2e;
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+    border-bottom: 4px solid #e94560;
+    display: inline-block;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* ============================================================
+   СООБЩЕНИЯ (messages, alert)
+   ============================================================ */
+
+.messages {
+    margin-bottom: 25px;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 5px solid;
+    animation: slideIn 0.3s ease;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border-left-color: #28a745;
+}
+
+.alert-error {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border-left-color: #dc3545;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+    color: #856404;
+    border-left-color: #ffc107;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    color: #0c5460;
+    border-left-color: #17a2b8;
+}
+
+/* ============================================================
+   ТАБЛИЦЫ (table, th, td)
+   ============================================================ */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+th {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================================
+   ФОРМЫ (form, input, select, label)
+   ============================================================ */
+
+form {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    margin-bottom: 30px;
+    max-width: 650px;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+form p {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #1a1a2e;
+    font-size: 15px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    background-color: #f8f9fa;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #e94560;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(233,69,96,0.2);
+}
+
+/* Группа полей с кнопкой (для internal_code и inn) */
+form > div {
+    margin-bottom: 25px;
+}
+
+form > div > div {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+form > div > div input {
+    flex: 1;
+}
+
+/* ============================================================
+   КНОПКИ (button, .btn)
+   ============================================================ */
+
+button, .btn {
+    background: linear-gradient(135deg, #e94560 0%, #c62a48 100%);
+    color: white;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 12px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+button:hover, .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(233,69,96,0.4);
+}
+
+button:active, .btn:active {
+    transform: translateY(0);
+}
+
+button[type="submit"] {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+}
+
+button[type="submit"]:hover {
+    box-shadow: 0 6px 15px rgba(40,167,69,0.4);
+}
+
+button[type="button"] {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+}
+
+button[type="button"]:hover {
+    box-shadow: 0 6px 15px rgba(23,162,184,0.4);
+}
+
+.btn-secondary, a.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+}
+
+.btn-danger, a.btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%);
+}
+
+/* Ссылки-кнопки внутри таблиц */
+td a {
+    display: inline-block;
+    padding: 6px 14px;
+    margin: 0 4px;
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    color: #1a1a2e;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+td a:hover {
+    background: linear-gradient(135deg, #e94560 0%, #c62a48 100%);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Группа кнопок вверху страниц */
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.button-group a {
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.button-group a:hover {
+    background: linear-gradient(135deg, #e94560 0%, #c62a48 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233,69,96,0.3);
+}
+
+/* ============================================================
+   ФИЛЬТРЫ (filter-form)
+   ============================================================ */
+
+.filter-form {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.filter-form select {
+    width: auto;
+    min-width: 220px;
+}
+
+.filter-form button {
+    margin: 0;
+}
+
+/* ============================================================
+   ПАГИНАЦИЯ (pagination)
+   ============================================================ */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 40px 0 20px;
+    flex-wrap: wrap;
+}
+
+.pagination a, .pagination span {
+    padding: 10px 18px;
+    border: 1px solid #dee2e6;
+    text-decoration: none;
+    color: #1a1a2e;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    background: white;
+}
+
+.pagination a:hover {
+    background: linear-gradient(135deg, #e94560 0%, #c62a48 100%);
+    color: white;
+    border-color: #e94560;
+    transform: translateY(-1px);
+}
+
+.pagination .current {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    border-color: #1a1a2e;
+}
+
+/* ============================================================
+   КАРТОЧКИ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ (cards-container, card)
+   ============================================================ */
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.card h3 {
+    color: #1a1a2e;
+    margin-bottom: 15px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.card p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.card-links {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.card-links a {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #e94560 0%, #c62a48 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.card-links a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233,69,96,0.4);
+}
+
+/* ============================================================
+   ГРУППЫ ДУБЛИКАТОВ (duplicate-group)
+   ============================================================ */
+
+.duplicate-group {
+    background: white;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.duplicate-group h3 {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 18px 25px;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.duplicate-group table {
+    margin: 0;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.duplicate-group th {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    color: #1a1a2e;
+}
+
+/* Чекбоксы */
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #e94560;
+}
+
+/* ============================================================
+   РЕЗУЛЬТАТЫ ПРОВЕРКИ (result-container)
+   ============================================================ */
+
+.result-container {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-top: 35px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.result-container h3 {
+    color: #1a1a2e;
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.result-container h4 {
+    color: #e94560;
+    margin: 25px 0 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    padding-left: 10px;
+    border-left: 4px solid #e94560;
+}
+
+.result-container ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.result-container li {
+    padding: 12px 15px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border-left: 4px solid #e94560;
+    font-weight: 500;
+}
+
+/* ============================================================
+   ЖУРНАЛ ИЗМЕНЕНИЙ (changelog)
+   ============================================================ */
+
+.changelog-table {
+    font-size: 14px;
+}
+
+.changelog-table th {
+    font-size: 13px;
+}
+
+/* ============================================================
+   ПОДВАЛ (footer)
+   ============================================================ */
+
+footer {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    margin-top: 60px;
+    border-top: 3px solid #e94560;
+}
+
+footer p {
+    font-size: 14px;
+    opacity: 0.85;
+    letter-spacing: 1px;
+}
+
+/* ============================================================
+   АДАПТИВНОСТЬ (Media Queries)
+   ============================================================ */
+
+@media (max-width: 992px) {
+    .body-content {
+        padding: 20px;
+        margin: 0 15px;
+    }
+    
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-menu nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .main-menu nav a {
+        width: 80%;
+        text-align: center;
+        padding: 12px;
+    }
+    
+    .body-content {
+        padding: 15px;
+    }
+    
+    .body-content h2 {
+        font-size: 22px;
+        display: block;
+        text-align: center;
+    }
+    
+    table, th, td {
+        font-size: 13px;
+    }
+    
+    th, td {
+        padding: 8px 6px;
+    }
+    
+    form {
+        padding: 20px;
+    }
+    
+    form > div > div {
+        flex-direction: column;
+    }
+    
+    button, .btn {
+        width: 100%;
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .button-group a {
+        text-align: center;
+    }
+    
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-form select {
+        width: 100%;
+    }
+    
+    .pagination a, .pagination span {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    .card h3 {
+        font-size: 20px;
+    }
+    
+    td a {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .main-menu h1 {
+        font-size: 24px;
+    }
+    
+    .body-content h2 {
+        font-size: 20px;
+    }
+}
+
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: #6c757d;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.mt-30 {
+    margin-top: 30px;
+}
+
+.mb-30 {
+    margin-bottom: 30px;
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Анимация загрузки */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.body-content {
+    animation: fadeIn 0.5s ease;
+}
+
+
+/* Базовые стили для всех ссылок */
+a {
+    color: #e94560;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: #c62a48;
+    text-decoration: underline;
+}
+
+/* Ссылки в меню */
+.main-menu nav a {
+    color: white;
+}
+
+.main-menu nav a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+/* Ссылки в таблицах (кнопки действий) */
+td a {
+    display: inline-block;
+    padding: 5px 12px;
+    background: #f0f0f0;
+    border-radius: 15px;
+    color: #333;
+}
+
+td a:hover {
+    background: #e94560;
+    color: white;
+    text-decoration: none;
+}
+
+/* Кнопка "Отмена" в формах */
+form a {
+    display: inline-block;
+    padding: 12px 28px;
+    background: #6c757d;
+    color: white;
+    border-radius: 30px;
+}
+
+form a:hover {
+    background: #5a6268;
+    color: white;
+    text-decoration: none;
+}

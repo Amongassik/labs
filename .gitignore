@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+build/
+eggs/
+.eggs/
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.env
+.venv
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/media/
+/staticfiles/
+/static/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Project specific
+config.py
+settings_local.py
+*.secret
+
+# Exports (временные файлы)
+/exports/
+*.csv
+!*.csv.example
+
+# Excel временные файлы
+~$*.xlsx
+~$*.xls
+
+# Uploads
+/uploads/
+/media/
+
+# Environment variables
+.env.local
+.env.production
+
+# Testing
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/

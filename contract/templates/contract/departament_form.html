@@ -1,0 +1,16 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    
+    {{ form.as_p }}
+    
+    <div>
+        <button type="submit">Сохранить</button>
+        <a href="{% url 'contract:departament_list' %}">Отмена</a>
+    </div>
+</form>
+{% endblock %}

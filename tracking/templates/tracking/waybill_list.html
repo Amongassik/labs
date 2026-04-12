@@ -1,0 +1,45 @@
+{% extends 'tracking/base.html' %}
+
+{% block title %}Путевые листы{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>📋 Путевые листы</h2>
+    <a href="{% url 'tracking:waybill_create_tr' %}" class="btn btn-primary">➕ Создать путевой лист</a>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Водитель</th>
+            <th>Автомобиль</th>
+            <th>Время выезда</th>
+            <th>Время заезда</th>
+            <th>Пробег (км)</th>
+            <th>Расход (л)</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for waybill in waybills %}
+        <tr>
+            <td>{{ waybill.date|date:"d.m.Y" }}</td>
+            <td>{{ waybill.driver }}</td>
+            <td>{{ waybill.car.brand }} ({{ waybill.car.license_plate }})</td>
+            <td>{{ waybill.departure_time|date:"d.m.Y H:i" }}</td>
+            <td>{{ waybill.return_time|date:"d.m.Y H:i" }}</td>
+            <td>{{ waybill.mileage }}</td>
+            <td>{{ waybill.fuel_consumption|floatformat:2 }}</td>
+            <td class="actions">
+                <a href="{% url 'tracking:waybill_detail_tr' waybill.pk %}" class="btn-view">👁️</a>
+                <a href="{% url 'tracking:waybill_update_tr' waybill.pk %}" class="btn-edit">✏️</a>
+                <a href="{% url 'tracking:waybill_delete_tr' waybill.pk %}" class="btn-delete">🗑️</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8">Нет путевых листов</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

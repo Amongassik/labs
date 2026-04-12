@@ -1,0 +1,53 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>Журнал изменений</h2>
+
+<p>Имитация реестра изменений согласно правилам модификации ПО (пункт 6)</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Дата и время</th>
+            <th>Тип сущности</th>
+            <th>ID сущности</th>
+            <th>Действие</th>
+            <th>Описание</th>
+            <th>Кто изменил</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in page_obj %}
+        <tr>
+            <td>{{ log.created_at|date:"d.m.Y H:i:s" }}</td>
+            <td>{{ log.entity_type }}</td>
+            <td>{{ log.entity_id }}</td>
+            <td>{{ log.get_action_display }}</td>
+            <td>{{ log.description|default:"-" }}</td>
+            <td>{{ log.changed_by }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">Записей в журнале нет</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Пагинация -->
+{% if page_obj.has_other_pages %}
+<div>
+    {% if page_obj.has_previous %}
+        <a href="?page=1">Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+    {% endif %}
+    
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+    
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<form method="post" id="fixed-asset-form">
+    {% csrf_token %}
+    
+    <div>
+        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+            <div>
+                {% for error in form.name.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <div>
+        <label for="{{ form.Departament.id_for_label }}">{{ form.Departament.label }}</label>
+        {{ form.Departament }}
+        {% if form.Departament.errors %}
+            <div>
+                {% for error in form.Departament.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <div>
+        <label for="{{ form.internal_code.id_for_label }}">{{ form.internal_code.label }}</label>
+        <div>
+            {{ form.internal_code }}
+            <button type="button" id="generate-code-btn">Назначить внутренний код</button>
+        </div>
+        {% if form.internal_code.errors %}
+            <div>
+                {% for error in form.internal_code.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div>{{ form.internal_code.help_text }}</div>
+    </div>
+    
+    <div>
+        <button type="submit">Сохранить</button>
+        <a href="{% url 'contract:fixed_asset_list' %}">Отмена</a>
+    </div>
+</form>
+{% endblock %}

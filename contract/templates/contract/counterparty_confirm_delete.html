@@ -1,0 +1,14 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>Пометка на удаление контрагента</h2>
+
+<p>Вы уверены, что хотите пометить на удаление контрагента "{{ counterparty.name }}" (ИНН: {{ counterparty.inn|default:"не указан" }})?</p>
+<p>Помеченные на удаление контрагенты не отображаются в основном списке, но могут быть восстановлены.</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Да, пометить на удаление</button>
+    <a href="{% url 'contract:counterparty_list' %}">Отмена</a>
+</form>
+{% endblock %}

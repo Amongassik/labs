@@ -1,0 +1,52 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>Список подразделений</h2>
+
+<div>
+    <a href="{% url 'contract:departament_create' %}">+ Добавить подразделение</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Код подразделения</th>
+            <th>Название</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for departament in page_obj %}
+        <tr>
+            <td>{{ departament.code }}</td>
+            <td>{{ departament.name }}</td>
+            <td>
+                <a href="{% url 'contract:departament_edit' departament.pk %}">Редактировать</a>
+                <a href="{% url 'contract:departament_delete' departament.pk %}">Удалить</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Нет подразделений</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Пагинация -->
+{% if page_obj.has_other_pages %}
+<div>
+    {% if page_obj.has_previous %}
+        <a href="?page=1">Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+    {% endif %}
+    
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+    
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

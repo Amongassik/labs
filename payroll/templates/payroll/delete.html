@@ -1,0 +1,22 @@
+<!-- payroll/templates/payroll/delete.html -->
+
+{% extends 'payroll/base.html' %}
+
+{% block content %}
+<div class="delete-confirm">
+    <p class="warning">⚠️ Вы уверены, что хотите удалить сотрудника?</p>
+    
+    <div class="employee-info">
+        <p><strong>ФИО:</strong> {{ employee.name }}</p>
+        <p><strong>Начислено:</strong> {{ employee.accrued_amount|floatformat:2 }} руб.</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-delete">✅ Да, удалить</button>
+            <a href="{% url 'index' %}" class="btn btn-cancel">❌ Нет, отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>Список контрагентов</h2>
+
+<div>
+    <a href="{% url 'contract:counterparty_create' %}">+ Добавить контрагента</a>
+    <a href="?show_deleted=true">Показать удалённых</a>
+    <a href="?show_deleted=false">Скрыть удалённых</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Внутренний код</th>
+            <th>Наименование</th>
+            <th>ИНН</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for counterparty in page_obj %}
+        <tr>
+            <td>{{ counterparty.internal_code }}</td>
+            <td>{{ counterparty.name }}</td>
+            <td>{{ counterparty.inn|default:"-" }}</td>
+            <td>
+                {% if counterparty.deletion_mark %}
+                    Помечен на удаление
+                {% else %}
+                    Активен
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'contract:counterparty_edit' counterparty.internal_code %}">Редактировать</a>
+                {% if counterparty.deletion_mark %}
+                    <a href="{% url 'contract:counterparty_restore' counterparty.internal_code %}">Восстановить</a>
+                {% else %}
+                    <a href="{% url 'contract:counterparty_delete' counterparty.internal_code %}">Пометить на удаление</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">Нет контрагентов</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Пагинация -->
+{% if page_obj.has_other_pages %}
+<div>
+    {% if page_obj.has_previous %}
+        <a href="?page=1{% if show_deleted %}&show_deleted=true{% endif %}">Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if show_deleted %}&show_deleted=true{% endif %}">Предыдущая</a>
+    {% endif %}
+    
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+    
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if show_deleted %}&show_deleted=true{% endif %}">Следующая</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if show_deleted %}&show_deleted=true{% endif %}">Последняя</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>Проверка ИНН контрагента</h2>
+
+<form method="post">
+    {% csrf_token %}
+    
+    <div>
+        <label for="{{ form.inn.id_for_label }}">{{ form.inn.label }}</label>
+        {{ form.inn }}
+        {% if form.inn.errors %}
+            <div>
+                {% for error in form.inn.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <div>
+        <button type="submit">Проверить</button>
+    </div>
+</form>
+
+{% if result %}
+    <div>
+        <h3>Результат проверки ИНН: {{ searched_inn }}</h3>
+        
+        <div>
+            <h4>Точные совпадения:</h4>
+            {% if result.exact %}
+                <ul>
+                    {% for cp in result.exact %}
+                        <li>{{ cp.name }} (внутренний код: {{ cp.internal_code }}) - ИНН: {{ cp.inn }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Точных совпадений не найдено.</p>
+            {% endif %}
+        </div>
+        
+        <div>
+            <h4>Вхождение как подстроки:</h4>
+            {% if result.substring %}
+                <ul>
+                    {% for cp in result.substring %}
+                        <li>{{ cp.name }} (внутренний код: {{ cp.internal_code }}) - ИНН: {{ cp.inn }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Вхождений как подстроки не найдено.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

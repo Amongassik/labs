@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Отчет по подотчетным лицам</title>
+    <style>
+        @page {
+            size: landscape;
+            margin: 1.5cm;
+        }
+        
+        body {
+            font-family: 'DejaVu Sans', 'Segoe UI', Arial, sans-serif;
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 18pt;
+        }
+        
+        .report-info {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 11pt;
+            color: #555;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 9pt;
+        }
+        
+        th, td {
+            border: 1px solid #ccc;
+            padding: 6px 8px;
+        }
+        
+        th {
+            background: #4CAF50;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        td {
+            text-align: right;
+        }
+        
+        td:first-child, th:first-child {
+            text-align: center;
+            width: 40px;
+        }
+        
+        td:nth-child(2) {
+            text-align: left;
+        }
+        
+        .debtor {
+            background-color: #fff3cd;
+        }
+        
+        .total-row {
+            background: #e8f5e9;
+            font-weight: bold;
+        }
+        
+        .total-row td {
+            border-top: 2px solid #4CAF50;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 8pt;
+            color: #999;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        
+        .number {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .text-left {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h2>Отчет по подотчетным лицам</h2>
+    
+    <div class="report-info">
+        <strong>Дата отчета:</strong> {{ report_date|date:"d.m.Y" }}<br>
+        <strong>Дата формирования:</strong> {{ generated_date|date:"d.m.Y H:i" }}
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Сотрудник</th>
+                <th>Должность</th>
+                <th>Отдел</th>
+                <th>Получено, ₽</th>
+                <th>Отчитано, ₽</th>
+                <th>Задолженность, ₽</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in report_data %}
+            <tr {% if row.debt > 0 %}class="debtor"{% endif %}>
+                <td>{{ forloop.counter }}</td>
+                <td class="text-left">{{ row.employee.full_name }}</td>
+                <td class="text-left">{{ row.employee.position|default:"—" }}</td>
+                <td class="text-left">{{ row.employee.department|default:"—" }}</td>
+                <td class="number">{{ row.given|floatformat:2 }}</td>
+                <td class="number">{{ row.reported|floatformat:2 }}</td>
+                <td class="number"><strong>{{ row.debt|floatformat:2 }}</strong></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="4"><strong>ИТОГО:</strong></td>
+                <td class="number"><strong>{{ total_given|floatformat:2 }}</strong></td>
+                <td class="number"><strong>{{ total_reported|floatformat:2 }}</strong></td>
+                <td class="number"><strong>{{ total_debt|floatformat:2 }}</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+    
+    <div class="footer">
+        Сформировано автоматически в системе учета подотчетных средств
+    </div>
+</body>
+</html>

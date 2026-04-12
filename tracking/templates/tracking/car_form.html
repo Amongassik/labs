@@ -1,0 +1,28 @@
+{% extends 'tracking/base.html' %}
+
+{% block title %}{{ form.instance.pk|yesno:"Редактирование,Добавление" }} автомобиля{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>{{ form.instance.pk|yesno:"✏️ Редактирование,➕ Добавление" }} автомобиля</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <div class="error">{{ field.errors }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+            <a href="{% url 'tracking:car_list_tr' %}" class="btn btn-secondary">❌ Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

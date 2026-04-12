@@ -1,0 +1,38 @@
+{% extends 'tracking/base.html' %}
+
+{% block title %}Автомобили{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>🚙 Список автомобилей</h2>
+    <a href="{% url 'tracking:car_create_tr' %}" class="btn btn-primary">➕ Добавить автомобиль</a>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Марка</th>
+            <th>Гос. номер</th>
+            <th>Год выпуска</th>
+            <th>Норма расхода (л/км)</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for car in cars %}
+        <tr>
+            <td>{{ car.brand }}</td>
+            <td>{{ car.license_plate }}</td>
+            <td>{{ car.year }}</td>
+            <td>{{ car.fuel_rate }}</td>
+            <td class="actions">
+                <a href="{% url 'tracking:car_update_tr' car.pk %}" class="btn-edit">✏️</a>
+                <a href="{% url 'tracking:car_delete_tr' car.pk %}" class="btn-delete">🗑️</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">Нет автомобилей</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

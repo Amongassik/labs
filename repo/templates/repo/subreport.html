@@ -1,0 +1,449 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчет по подотчетным лицам</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        
+        /* Форма */
+        .filter-form {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+        
+        .filter-form > div {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-form label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .filter-form input, .filter-form select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .filter-form input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 5px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #0b7dda;
+        }
+        
+        .btn-excel {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-pdf {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-pdf:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .btn-print {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+        
+        /* Таблица */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .report-table th, .report-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        
+        .report-table th {
+            background: #4CAF50;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .report-table td {
+            text-align: right;
+        }
+        
+        .report-table td:first-child, .report-table th:first-child {
+            text-align: center;
+            width: 50px;
+        }
+        
+        .report-table td:nth-child(2) {
+            text-align: left;
+        }
+        
+        /* Выделение должников */
+        .debtor {
+            background-color: #fff3cd !important;
+        }
+        
+        /* Итоговая строка */
+        .total-row {
+            background: #e8f5e9;
+            font-weight: bold;
+        }
+        
+        .total-row td {
+            border-top: 2px solid #4CAF50;
+        }
+        
+        /* Нет данных */
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 16px;
+        }
+        
+        /* Spinner */
+        .spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-size: 16px;
+        }
+        
+        /* Информация об отчете */
+        .report-info {
+            color: #666;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 4px;
+        }
+        
+        /* Кнопка сброса */
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #5a6268;
+        }
+        
+        /* Печатная форма */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+            }
+            
+            .filter-form, .button-group, .btn, .no-print {
+                display: none !important;
+            }
+            
+            .report-table th {
+                background: #ddd !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .debtor {
+                background-color: #fff3cd !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            @page {
+                size: landscape;
+                margin: 1cm;
+            }
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .button-group {
+                margin-left: 0;
+                justify-content: flex-start;
+            }
+            
+            .report-table {
+                font-size: 12px;
+            }
+            
+            .report-table th, .report-table td {
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>📊 Отчет по подотчетным лицам</h2>
+    
+    <form method="get" id="reportForm" class="filter-form">
+        <div>
+            <label>📅 Дата отчета:</label>
+            {{ form.date }}
+        </div>
+        <div>
+            <label>🏢 Отдел:</label>
+            {{ form.department }}
+        </div>
+        <div>
+            <label>🔽 Сортировать:</label>
+            {{ form.sort_by }}
+        </div>
+        <div>
+            <label class="checkbox-label">
+                {{ form.hide_zero_debt }} Скрыть нулевую задолженность
+            </label>
+        </div>
+        <div>
+            <label class="checkbox-label">
+                {{ form.show_only_debtors }} Только должники
+            </label>
+        </div>
+        <div class="button-group">
+            <button type="submit" class="btn btn-primary" id="submitBtn">🔍 Сформировать</button>
+            <button type="button" class="btn btn-secondary btn-reset" id="resetBtn">🔄 Сбросить</button>
+            <button type="button" class="btn btn-print" onclick="window.print()">🖨️ Печать</button>
+            <button type="submit" name="export" value="excel" class="btn btn-excel">📊 Excel</button>
+            <button type="submit" name="export" value="pdf" class="btn btn-pdf" {% if not weasyprint_available %}disabled title="Установите WeasyPrint для PDF-экспорта"{% endif %}>📄 PDF</button>
+        </div>
+    </form>
+    
+    <div id="spinner" class="spinner">
+        ⏳ Формирование отчета...
+    </div>
+    
+    {% if report_date %}
+    <div class="report-info">
+        📅 Отчет на дату: <strong>{{ report_date|date:"d.m.Y" }}</strong>
+        {% if not weasyprint_available %}
+        <span style="margin-left: 15px; font-size: 12px; color: #f44336;">⚠️ PDF-экспорт недоступен (требуется установка WeasyPrint)</span>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    {% if has_data %}
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th>№ п/п</th>
+                <th>Сотрудник</th>
+                <th>Должность</th>
+                <th>Отдел</th>
+                <th>Получено под отчет, ₽</th>
+                <th>Отчитано/Возвращено, ₽</th>
+                <th>Задолженность, ₽</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in report_data %}
+            <tr {% if row.debt > 0 %}class="debtor"{% endif %}>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ row.employee.full_name }}</td>
+                <td>{{ row.employee.position|default:"—" }}</td>
+                <td>{{ row.employee.department|default:"—" }}</td>
+                <td class="number">{{ row.given|floatformat:2 }}</td>
+                <td class="number">{{ row.reported|floatformat:2 }}</td>
+                <td class="number">
+                    <strong>{{ row.debt|floatformat:2 }}</strong>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="4"><strong>ИТОГО:</strong></td>
+                <td class="number"><strong>{{ total_given|floatformat:2 }}</strong></td>
+                <td class="number"><strong>{{ total_reported|floatformat:2 }}</strong></td>
+                <td class="number"><strong>{{ total_debt|floatformat:2 }}</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+    {% else %}
+    <div class="no-data">
+        📭 Нет данных за указанный период.<br>
+        Попробуйте изменить параметры отчета.
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Spinner при отправке формы
+    const form = document.getElementById('reportForm');
+    const spinner = document.getElementById('spinner');
+    const submitBtn = document.getElementById('submitBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    
+    form.addEventListener('submit', function(e) {
+        // Проверяем, не экспорт ли это
+        const clickedButton = document.activeElement;
+        const isExport = clickedButton && clickedButton.name === 'export';
+        
+        if (!isExport) {
+            spinner.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Загрузка...';
+        }
+    });
+    
+    // Сброс формы
+    resetBtn.addEventListener('click', function() {
+        const inputs = form.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (input.type === 'checkbox') {
+                input.checked = false;
+            } else if (input.type === 'text' || input.type === 'date') {
+                input.value = '';
+            } else if (input.tagName === 'SELECT') {
+                input.selectedIndex = 0;
+            }
+        });
+        // Установка даты по умолчанию
+        const dateInput = form.querySelector('input[type="date"]');
+        if (dateInput) {
+            dateInput.value = new Date().toISOString().split('T')[0];
+        }
+        form.submit();
+    });
+    
+    // Восстановление кнопки после загрузки страницы
+    window.addEventListener('load', function() {
+        spinner.style.display = 'none';
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '🔍 Сформировать';
+        }
+    });
+    
+    // Автоматическое сохранение параметров в localStorage
+    const inputs = document.querySelectorAll('.filter-form input, .filter-form select');
+    inputs.forEach(input => {
+        if (input.type !== 'submit' && input.type !== 'button') {
+            input.addEventListener('change', function() {
+                if (input.type === 'checkbox') {
+                    localStorage.setItem('subreport_' + this.name, this.checked);
+                } else {
+                    localStorage.setItem('subreport_' + this.name, this.value);
+                }
+            });
+            
+            // Восстановление из localStorage
+            const savedValue = localStorage.getItem('subreport_' + input.name);
+            if (savedValue !== null) {
+                if (input.type === 'checkbox') {
+                    input.checked = savedValue === 'true';
+                } else if (input.type !== 'date' || savedValue) {
+                    input.value = savedValue;
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

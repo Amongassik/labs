@@ -1,0 +1,222 @@
+/* payroll/static/payroll/css/style.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Кнопки */
+.actions {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-add {
+    background: #28a745;
+    color: white;
+}
+
+.btn-print {
+    background: #007bff;
+    color: white;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+    padding: 4px 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.btn-save {
+    background: #28a745;
+    color: white;
+}
+
+.btn-cancel {
+    background: #6c757d;
+    color: white;
+}
+
+/* Таблица */
+.employee-table, .print-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.employee-table th, .employee-table td,
+.print-table th, .print-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.employee-table th, .print-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.empty {
+    text-align: center;
+    color: #999;
+}
+
+/* Форма */
+.employee-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Удаление */
+.delete-confirm {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.warning {
+    color: #dc3545;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.employee-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+/* Печатная форма */
+.print-container {
+    background: white;
+}
+
+.print-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #333;
+}
+
+.print-footer {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.total-row {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.print-button {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Условное форматирование */
+.high {
+    background-color: #ffcccc !important;
+}
+
+.low {
+    background-color: #ffffcc !important;
+}
+
+.medium {
+    background-color: #ccffcc !important;
+}
+
+.multiple {
+    border-left: 4px solid #0066cc;
+}
+
+/* Стили для печати */
+@media print {
+    .btn, .btn-print, .actions, .print-button, .btn-delete, .form-actions {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+        padding: 0;
+    }
+    
+    .container {
+        box-shadow: none;
+        padding: 0;
+    }
+    
+    .print-table {
+        border: 1px solid #000;
+    }
+    
+    .high, .low, .medium {
+        background-color: transparent !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

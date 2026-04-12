@@ -1,0 +1,53 @@
+{% extends 'tracking/base.html' %}
+
+{% block title %}Путевой лист №{{ waybill.id }}{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <h2>📄 Путевой лист №{{ waybill.id }}</h2>
+    
+    <div class="detail-card">
+        <div class="detail-row">
+            <span class="detail-label">Дата:</span>
+            <span class="detail-value">{{ waybill.date|date:"d.m.Y" }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Водитель:</span>
+            <span class="detail-value">{{ waybill.driver }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Автомобиль:</span>
+            <span class="detail-value">{{ waybill.car.brand }} ({{ waybill.car.license_plate }})</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Время выезда:</span>
+            <span class="detail-value">{{ waybill.departure_time|date:"d.m.Y H:i" }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Время заезда:</span>
+            <span class="detail-value">{{ waybill.return_time|date:"d.m.Y H:i" }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Начальный километраж:</span>
+            <span class="detail-value">{{ waybill.start_mileage }} км</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Конечный километраж:</span>
+            <span class="detail-value">{{ waybill.end_mileage }} км</span>
+        </div>
+        <div class="detail-row highlight">
+            <span class="detail-label">Пробег:</span>
+            <span class="detail-value">{{ mileage }} км</span>
+        </div>
+        <div class="detail-row highlight">
+            <span class="detail-label">Расход топлива:</span>
+            <span class="detail-value">{{ fuel_consumption|floatformat:2 }} л</span>
+        </div>
+    </div>
+    
+    <div class="form-actions">
+        <a href="{% url 'tracking:waybill_update_tr' waybill.pk %}" class="btn btn-primary">✏️ Редактировать</a>
+        <a href="{% url 'tracking:waybill_list_tr' %}" class="btn btn-secondary">🔙 Назад</a>
+    </div>
+</div>
+{% endblock %}

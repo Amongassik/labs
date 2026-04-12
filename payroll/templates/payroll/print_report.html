@@ -1,0 +1,55 @@
+<!-- payroll/templates/payroll/print_reported.html -->
+
+{% extends 'payroll/base.html' %}
+
+{% block content %}
+<div class="print-container">
+    <div class="print-header">
+        <h2>ЗАРПЛАТНАЯ ВЕДОМОСТЬ</h2>
+        <p>Дата: {% now "d.m.Y" %}</p>
+    </div>
+    
+    <table class="print-table">
+        <thead>
+            <tr>
+                <th>№ п/п</th>
+                <th>Сотрудник</th>
+                <th>Начислено (руб.)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in employees %}
+            <tr class="
+                {% if emp.accrued_amount > high_threshold %}high
+                {% elif emp.accrued_amount < low_threshold %}low
+                {% else %}medium
+                {% endif %}
+                {% if emp.accrued_amount|divisibleby:multiple_of %} multiple{% endif %}
+            ">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ emp.name }}</td>
+                <td>{{ emp.accrued_amount|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Нет данных</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="2"><strong>ИТОГО:</strong></td>
+                <td><strong>{{ total_sum|floatformat:2 }}</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+    
+    <div class="print-footer">
+        <p>Главный бухгалтер: ___________________</p>
+    </div>
+    
+    <div class="print-button">
+        <button onclick="window.print()" class="btn-print">🖨️ Распечатать</button>
+    </div>
+</div>
+{% endblock %}

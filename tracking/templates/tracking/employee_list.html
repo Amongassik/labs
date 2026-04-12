@@ -1,0 +1,34 @@
+{% extends 'tracking/base.html' %}
+
+{% block title %}Сотрудники{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>👥 Список сотрудников</h2>
+    <a href="{% url 'tracking:employee_create_tr' %}" class="btn btn-primary">➕ Добавить сотрудника</a>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.last_name }}</td>
+            <td>{{ employee.first_name }}</td>
+            <td class="actions">
+                <a href="{% url 'tracking:employee_update_tr' employee.pk %}" class="btn-edit">✏️</a>
+                <a href="{% url 'tracking:employee_delete_tr' employee.pk %}" class="btn-delete">🗑️</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">Нет сотрудников</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

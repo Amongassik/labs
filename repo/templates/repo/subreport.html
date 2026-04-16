@@ -311,7 +311,7 @@
             <button type="button" class="btn btn-secondary btn-reset" id="resetBtn">🔄 Сбросить</button>
             <button type="button" class="btn btn-print" onclick="window.print()">🖨️ Печать</button>
             <button type="submit" name="export" value="excel" class="btn btn-excel">📊 Excel</button>
-            <button type="submit" name="export" value="pdf" class="btn btn-pdf" {% if not weasyprint_available %}disabled title="Установите WeasyPrint для PDF-экспорта"{% endif %}>📄 PDF</button>
+            <button type="submit" name="export" value="pdf" class="btn btn-pdf">📄 PDF</button>
         </div>
     </form>
     
@@ -322,9 +322,6 @@
     {% if report_date %}
     <div class="report-info">
         📅 Отчет на дату: <strong>{{ report_date|date:"d.m.Y" }}</strong>
-        {% if not weasyprint_available %}
-        <span style="margin-left: 15px; font-size: 12px; color: #f44336;">⚠️ PDF-экспорт недоступен (требуется установка WeasyPrint)</span>
-        {% endif %}
     </div>
     {% endif %}
     

@@ -506,6 +506,45 @@ def check_duplicate_form(request: HttpRequest):
     return render(request, 'contract/check_duplicate_form.html', context)
 
 
+def counterparty_hard_delete(request: HttpRequest, pk):
+    """
+    Жесткое (физическое) удаление контрагента из базы данных.
+    В отличие от мягкого удаления (пометки), эта операция необратима.
+    """
+    try:
+        counterparty = get_object_or_404(Counterparty, internal_code=pk)
+    except Http404:
+        messages.error(request, f'Контрагент с кодом {pk} не найден! Возможно, он уже был удалён.')
+        return redirect('contract:counterparty_list')
+    
+    if request.method == 'POST':
+        counterparty_name = counterparty.name
+        counterparty_inn = counterparty.inn
+        counterparty_code = counterparty.internal_code
+        
+        # Физическое удаление из БД
+        counterparty.delete()
+        
+        # Запись в журнал изменений
+        ChangeLog.objects.create(
+            entity_type='Counterparty',
+            entity_id=str(counterparty_code),
+            action='DELETE',
+            description=f'Жёсткое удаление контрагента: {counterparty_name} (ИНН: {counterparty_inn}). Запись полностью удалена из БД.',
+            changed_by=request.user.username if request.user.is_authenticated else 'admin'
+        )
+        
+        messages.success(request, f'Контрагент "{counterparty_name}" полностью удалён из базы данных!')
+        return redirect('contract:counterparty_list')
+    
+    # GET-запрос: показываем страницу подтверждения
+    context = {
+        'counterparty': counterparty,
+        'title': 'Полное удаление контрагента'
+    }
+    return render(request, 'contract/counterparty_hard_delete.html', context)
+
+
 # ============================================================
 # ЖУРНАЛ ИЗМЕНЕНИЙ
 # ============================================================

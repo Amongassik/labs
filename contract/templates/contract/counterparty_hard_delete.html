@@ -1,0 +1,53 @@
+{% extends 'contract/base.html' %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<div style="background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; margin-bottom: 20px;">
+    <h3 style="color: #856404; margin-top: 0;">⚠️ Внимание! Необратимая операция!</h3>
+    <p style="margin-bottom: 0;">
+        Вы собираетесь <strong>полностью удалить</strong> контрагента из базы данных.
+        Это действие <strong>нельзя будет отменить</strong>!
+        Запись будет удалена физически, без возможности восстановления.
+    </p>
+</div>
+
+<div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
+    <h3>Информация о контрагенте:</h3>
+    <table>
+        <tbody>
+            <tr>
+                <td style="padding: 8px; font-weight: bold; width: 200px;">Наименование:</td>
+                <td style="padding: 8px;"><strong>{{ counterparty.name }}</strong></td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; font-weight: bold;">Внутренний код:</td>
+                <td style="padding: 8px;"><code>{{ counterparty.internal_code }}</code></td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; font-weight: bold;">ИНН:</td>
+                <td style="padding: 8px;">
+                    {% if counterparty.inn %}
+                        <code>{{ counterparty.inn }}</code>
+                    {% else %}
+                        <span style="color: #999;">не указан</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<form method="post" action="{% url 'contract:counterparty_hard_delete' pk=counterparty.internal_code %}">
+    {% csrf_token %}
+    
+    <div>
+        <button type="submit" style="background-color: #dc3545; color: white; padding: 10px 20px; border: none; cursor: pointer; font-size: 16px;">
+            🗑️ Полностью удалить из базы данных
+        </button>
+        <a href="{% url 'contract:counterparty_list' %}" style="margin-left: 10px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none;">
+            Отмена
+        </a>
+    </div>
+</form>
+{% endblock %}

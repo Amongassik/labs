@@ -36,8 +36,18 @@
                 <a href="{% url 'contract:counterparty_edit' counterparty.internal_code %}">Редактировать</a>
                 {% if counterparty.deletion_mark %}
                     <a href="{% url 'contract:counterparty_restore' counterparty.internal_code %}">Восстановить</a>
+                    <a href="{% url 'contract:counterparty_hard_delete' counterparty.internal_code %}" 
+                       style="color: red; font-weight: bold;"
+                       onclick="return confirm('ВНИМАНИЕ! Вы уверены, что хотите ПОЛНОСТЬЮ удалить контрагента {{ counterparty.name|escapejs }} из базы данных? Это действие НЕОБРАТИМО!');">
+                        Удалить навсегда
+                    </a>
                 {% else %}
                     <a href="{% url 'contract:counterparty_delete' counterparty.internal_code %}">Пометить на удаление</a>
+                    <a href="{% url 'contract:counterparty_hard_delete' counterparty.internal_code %}" 
+                       style="color: red; font-weight: bold;"
+                       onclick="return confirm('ВНИМАНИЕ! Вы уверены, что хотите ПОЛНОСТЬЮ удалить контрагента {{ counterparty.name|escapejs }} из базы данных? Это действие НЕОБРАТИМО!');">
+                        Удалить навсегда
+                    </a>
                 {% endif %}
             </td>
         </tr>

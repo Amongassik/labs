@@ -24,6 +24,7 @@ urlpatterns = [
     path('counterparties/<int:pk>/edit/', views.counterparty_edit, name='counterparty_edit'),
     path('counterparties/<int:pk>/delete/', views.counterparty_delete, name='counterparty_delete'),
     path('counterparties/<int:pk>/restore/', views.counterparty_restore, name='counterparty_restore'),
+    path('counterparties/<int:pk>/hard-delete/', views.counterparty_hard_delete, name='counterparty_hard_delete'),
     #Проверка дубликатов
     path('duplicates/', views.duplicate_groups, name='duplicate_groups'),
     path('check-inn-form/', views.check_duplicate_form, name='check_duplicate_form'),

@@ -1,55 +1,493 @@
-<!-- payroll/templates/payroll/print_reported.html -->
-
 {% extends 'payroll/base.html' %}
 
 {% block content %}
 <div class="print-container">
-    <div class="print-header">
-        <h2>ЗАРПЛАТНАЯ ВЕДОМОСТЬ</h2>
-        <p>Дата: {% now "d.m.Y" %}</p>
+    <!-- Заголовок отчета -->
+    <div class="report-header">
+        <h2>ОТЧЕТ ПО ВСЕМ СОТРУДНИКАМ</h2>
+        <p>за период с 01.01.2024 по {% now "d.m.Y" %}</p>
+        <p>Количество сотрудников: {{ total_employees }}</p>
     </div>
     
-    <table class="print-table">
+    <!-- Основная таблица отчета -->
+    <table class="print-table" id="salaryReport">
         <thead>
             <tr>
                 <th>№ п/п</th>
                 <th>Сотрудник</th>
+                <th>Должность</th>
                 <th>Начислено (руб.)</th>
             </tr>
         </thead>
         <tbody>
-            {% for emp in employees %}
-            <tr class="
-                {% if emp.accrued_amount > high_threshold %}high
-                {% elif emp.accrued_amount < low_threshold %}low
-                {% else %}medium
-                {% endif %}
-                {% if emp.accrued_amount|divisibleby:multiple_of %} multiple{% endif %}
-            ">
-                <td>{{ forloop.counter }}</td>
+            {% for group in grouped_employees %}
+            <!-- Заголовок группы (подразделение) -->
+            <tr class="group-header">
+                <td colspan="4">
+                    <strong>Подразделение: {{ group.department }}</strong>
+                    <span class="group-count">({{ group.employees|length }} чел.)</span>
+                </td>
+            </tr>
+            
+            <!-- Строки сотрудников -->
+            {% for emp in group.employees %}
+            <tr class="salary-row" 
+                data-amount="{{ emp.accrued_amount }}"
+                data-employee="{{ emp.name }}">
+                <td>{{ forloop.parentloop.counter }}.{{ forloop.counter }}</td>
                 <td>{{ emp.name }}</td>
-                <td>{{ emp.accrued_amount|floatformat:2 }}</td>
+                <td>{{ emp.position }}</td>
+                <td class="amount-cell">{{ emp.accrued_amount|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+            
+            <!-- Итого по подразделению -->
+            <tr class="group-total">
+                <td colspan="3"><strong>Итого по подразделению "{{ group.department }}":</strong></td>
+                <td class="amount-cell"><strong>{{ group.dept_total|floatformat:2 }}</strong></td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="3">Нет данных</td>
+                <td colspan="4" class="empty">Нет данных для отображения</td>
             </tr>
             {% endfor %}
         </tbody>
         <tfoot>
             <tr class="total-row">
-                <td colspan="2"><strong>ИТОГО:</strong></td>
-                <td><strong>{{ total_sum|floatformat:2 }}</strong></td>
+                <td colspan="3"><strong>ВСЕГО ПО ОРГАНИЗАЦИИ:</strong></td>
+                <td class="amount-cell"><strong>{{ total_sum|floatformat:2 }}</strong></td>
             </tr>
         </tfoot>
     </table>
     
-    <div class="print-footer">
-        <p>Главный бухгалтер: ___________________</p>
+    <!-- Подвал отчета -->
+    <div class="report-footer">
+        <table class="signature-table">
+            <tr>
+                <td>Главный бухгалтер: ___________________</td>
+                <td>Дата: {% now "d.m.Y" %}</td>
+            </tr>
+            <tr>
+                <td>Директор: ___________________</td>
+                <td>Печать: М.П.</td>
+            </tr>
+        </table>
     </div>
     
-    <div class="print-button">
-        <button onclick="window.print()" class="btn-print">🖨️ Распечатать</button>
+    <!-- Кнопки управления (скрываются при печати) -->
+    <div class="no-print print-controls">
+        <button onclick="window.print()" class="btn btn-print">🖨️ Распечатать отчет</button>
+        <button onclick="exportToExcel()" class="btn btn-excel">📊 Экспорт в Excel</button>
+        <a href="{% url 'index' %}" class="btn btn-cancel">↩️ Назад к списку</a>
     </div>
 </div>
+
+<!-- Условные обозначения -->
+<div class="legend no-print">
+    <h3>Условные обозначения:</h3>
+    <div class="legend-items">
+        <span class="legend-item high-legend">Высокая ЗП (> 100 000 ₽)</span>
+        <span class="legend-item low-legend">Низкая ЗП (< 30 000 ₽)</span>
+        <span class="legend-item medium-legend">Средняя ЗП (30 000 - 100 000 ₽)</span>
+        <span class="legend-item multiple-legend">Кратно 5 000</span>
+        <span class="legend-item not-multiple-legend">Не кратно 5 000</span>
+    </div>
+</div>
+
+<script>
+// Основная функция форматирования отчета
+document.addEventListener('DOMContentLoaded', function() {
+    formatReport();
+    addInteractiveFeatures();
+});
+
+function formatReport() {
+    const highThreshold = {{ high_threshold }};
+    const lowThreshold = {{ low_threshold }};
+    const multipleOf = {{ multiple_of }};
+    
+    const rows = document.querySelectorAll('.salary-row');
+    
+    rows.forEach((row, index) => {
+        const amount = parseFloat(row.dataset.amount);
+        
+        // 1. Подсветка по сумме
+        if (amount > highThreshold) {
+            row.classList.add('high-salary');
+        } else if (amount < lowThreshold) {
+            row.classList.add('low-salary');
+        } else {
+            row.classList.add('medium-salary');
+        }
+        
+        // 2. Проверка кратности
+        if (amount % multipleOf === 0) {
+            row.classList.add('multiple-salary');
+        } else {
+            row.classList.add('not-multiple-salary');
+        }
+        
+        // 3. Чередование строк для читаемости
+        if (index % 2 === 0) {
+            row.classList.add('even-row');
+        }
+    });
+    
+    // Подсветка итоговых строк
+    document.querySelectorAll('.group-total').forEach(row => {
+        row.style.backgroundColor = '#e0e0e0';
+    });
+}
+
+function addInteractiveFeatures() {
+    // Добавляем всплывающие подсказки
+    const rows = document.querySelectorAll('.salary-row');
+    
+    rows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.01)';
+            this.style.transition = 'transform 0.2s';
+            this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+            this.style.boxShadow = 'none';
+        });
+        
+        // Добавляем title с информацией
+        const amount = parseFloat(row.dataset.amount);
+        const employee = row.dataset.employee;
+        row.title = `${employee}: ${amount.toFixed(2)} руб.`;
+    });
+}
+
+// Функция экспорта в Excel
+function exportToExcel() {
+    const table = document.getElementById('salaryReport');
+    const rows = table.querySelectorAll('tr');
+    let csv = [];
+    
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const rowData = [];
+        cols.forEach(col => {
+            rowData.push('"' + col.innerText.replace(/"/g, '""') + '"');
+        });
+        csv.push(rowData.join(';'));
+    });
+    
+    const csvContent = csv.join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], {type: 'text/csv;charset=utf-8;'});
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'Отчет_по_сотрудникам.csv');
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
+
+<style>
+    /* ===== СТИЛИ ОТЧЕТА ===== */
+    
+    .report-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 8px;
+    }
+    
+    .report-header h2 {
+        margin: 0 0 10px 0;
+        font-size: 24px;
+        text-transform: uppercase;
+    }
+    
+    .report-header p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+    
+    /* Основная таблица */
+    .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+    
+    .print-table th {
+        background-color: #2c3e50;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 12px;
+    }
+    
+    .print-table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+    
+    /* Подсветка строк */
+    .high-salary {
+        background-color: #ffcccc !important;
+    }
+    
+    .low-salary {
+        background-color: #ffffcc !important;
+    }
+    
+    .medium-salary {
+        background-color: #ccffcc !important;
+    }
+    
+    /* Кратность */
+    .multiple-salary {
+        border-left: 5px solid #0066cc !important;
+    }
+    
+    .not-multiple-salary {
+        border-left: 5px solid #ff9966 !important;
+    }
+    
+    /* Группы */
+    .group-header {
+        background-color: #34495e !important;
+        color: white;
+        font-size: 16px;
+    }
+    
+    .group-header td {
+        padding: 15px !important;
+    }
+    
+    .group-count {
+        font-size: 12px;
+        opacity: 0.8;
+        margin-left: 10px;
+    }
+    
+    .group-total {
+        background-color: #f0f0f0 !important;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .group-total td {
+        border-top: 2px solid #333 !important;
+        padding: 12px !important;
+    }
+    
+    /* Общий итог */
+    .total-row {
+        background-color: #2c3e50 !important;
+        color: white;
+        font-size: 16px;
+    }
+    
+    .total-row td {
+        padding: 15px !important;
+        border-top: 3px solid #000 !important;
+    }
+    
+    /* Выравнивание сумм */
+    .amount-cell {
+        text-align: right;
+        font-family: 'Courier New', monospace;
+    }
+    
+    /* Четные строки */
+    .even-row {
+        background-color: rgba(0,0,0,0.02);
+    }
+    
+    /* Подвал */
+    .report-footer {
+        margin-top: 50px;
+    }
+    
+    .signature-table {
+        width: 100%;
+        border: none;
+    }
+    
+    .signature-table td {
+        padding: 20px 10px;
+        border: none;
+    }
+    
+    /* Легенда */
+    .legend {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .legend h3 {
+        margin-bottom: 15px;
+    }
+    
+    .legend-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .legend-item {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        border: 1px solid #ddd;
+    }
+    
+    .high-legend {
+        background-color: #ffcccc;
+    }
+    
+    .low-legend {
+        background-color: #ffffcc;
+    }
+    
+    .medium-legend {
+        background-color: #ccffcc;
+    }
+    
+    .multiple-legend {
+        border-left: 5px solid #0066cc;
+    }
+    
+    .not-multiple-legend {
+        border-left: 5px solid #ff9966;
+    }
+    
+    /* Кнопки управления */
+    .print-controls {
+        margin-top: 30px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    
+    .btn-excel {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    /* Анимации */
+    .salary-row {
+        transition: all 0.3s ease;
+    }
+    
+    .salary-row:hover {
+        background-color: #f0f8ff !important;
+        cursor: pointer;
+    }
+    
+    /* ===== СТИЛИ ДЛЯ ПЕЧАТИ ===== */
+    @media print {
+        @page {
+            size: A4 landscape;
+            margin: 1cm;
+        }
+        
+        body {
+            background: white;
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+        }
+        
+        .no-print {
+            display: none !important;
+        }
+        
+        .container {
+            box-shadow: none;
+            padding: 0;
+            max-width: 100%;
+        }
+        
+        .report-header {
+            background: none !important;
+            color: black;
+            border-bottom: 2px solid #000;
+            margin-bottom: 20px;
+        }
+        
+        .print-table {
+            page-break-inside: auto;
+        }
+        
+        .print-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        
+        .print-table th {
+            background-color: #f0f0f0 !important;
+            color: black;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .high-salary {
+            background-color: #ffcccc !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .low-salary {
+            background-color: #ffffcc !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .medium-salary {
+            background-color: #ccffcc !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .group-header {
+            background-color: #e0e0e0 !important;
+            color: black;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .group-total {
+            background-color: #f0f0f0 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .total-row {
+            background-color: #333 !important;
+            color: white;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .multiple-salary,
+        .not-multiple-salary {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .signature-table {
+            margin-top: 30px;
+        }
+    }
+</style>
 {% endblock %}

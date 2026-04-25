@@ -1,5 +1,3 @@
-<!-- payroll/templates/payroll/delete.html -->
-
 {% extends 'payroll/base.html' %}
 
 {% block content %}
@@ -8,7 +6,10 @@
     
     <div class="employee-info">
         <p><strong>ФИО:</strong> {{ employee.name }}</p>
+        <p><strong>Подразделение:</strong> {{ employee.department }}</p>
+        <p><strong>Должность:</strong> {{ employee.position }}</p>
         <p><strong>Начислено:</strong> {{ employee.accrued_amount|floatformat:2 }} руб.</p>
+        <p><strong>Дата:</strong> {{ employee.accrual_date|date:"d.m.Y" }}</p>
     </div>
     
     <form method="post">
